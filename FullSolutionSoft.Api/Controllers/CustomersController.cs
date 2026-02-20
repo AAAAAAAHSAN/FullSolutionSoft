@@ -45,5 +45,21 @@ namespace FullSolutionSoft.Api.Controllers
 
             return Ok(result);
         }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(Guid id, CreateCustomerDto dto)
+        {
+            var result = await _service.UpdateAsync(id, dto);
+            if (result == null) return NotFound();
+            return Ok(result);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            var deleted = await _service.DeleteAsync(id);
+            if (!deleted) return NotFound();
+            return NoContent(); // 204 No Content
+        }
     }
 }

@@ -1,7 +1,4 @@
 ﻿using FullSolutionSoft.Application.DTOs;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace FullSolutionSoft.Application.Interfaces
 {
@@ -10,5 +7,8 @@ namespace FullSolutionSoft.Application.Interfaces
         Task<CustomerDto> CreateAsync(CreateCustomerDto dto);
         Task<CustomerDto?> GetByIdAsync(Guid id);
         Task<IEnumerable<CustomerDto>> GetAllAsync();
+
+        Task<CustomerDto?> UpdateAsync(Guid id, CreateCustomerDto dto);
+        Task<bool> DeleteAsync(Guid id);
     }
 }
