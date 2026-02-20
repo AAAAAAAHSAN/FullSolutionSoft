@@ -1,4 +1,5 @@
-﻿using FullSolutionSoft.Application.DTOs;
+﻿using FullSolutionSoft.Application.Common;
+using FullSolutionSoft.Application.DTOs;
 using FullSolutionSoft.Application.Interfaces;
 using FullSolutionSoft.Domain.Entities;
 using FullSolutionSoft.Domain.Enums;
@@ -28,7 +29,7 @@ namespace FullSolutionSoft.Application.Services
                 CustomerId = dto.CustomerId,
                 OrderNumber = dto.OrderNumber,
                 TotalAmount = dto.TotalAmount,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.Now
             };
 
             await _orderRepository.AddAsync(order);
@@ -41,6 +42,47 @@ namespace FullSolutionSoft.Application.Services
         {
             var orders = await _orderRepository.GetByCustomerIdAsync(customerId);
             return orders.Select(o => new OrderDto(o.Id, o.CustomerId, o.OrderNumber, o.TotalAmount,o.Status, o.CreatedAt));
+        }
+
+        public async Task<PagedResult<OrderDto>> GetFilteredAsync(OrderFilterDto filter)
+        {
+            var query = _orderRepository.GetQueryable();
+
+            if (filter.FromDate.HasValue)
+                query = query.Where(o => o.CreatedAt >= filter.FromDate.Value);
+
+            if (filter.ToDate.HasValue)
+                query = query.Where(o => o.CreatedAt <= filter.ToDate.Value);
+
+            if (filter.Status.HasValue)
+            {
+                query = query.Where(o => o.Status == filter.Status.Value);
+            }
+
+            var totalCount = await _orderRepository.CountAsync(query);
+
+            query = query
+                .OrderByDescending(o => o.CreatedAt)
+                .Skip((filter.PageNumber - 1) * filter.PageSize)
+                .Take(filter.PageSize);
+
+            var orders = await _orderRepository.ToListAsync(query);
+
+            var dtoList = orders.Select(o => new OrderDto(
+                o.Id,
+                o.CustomerId,
+                o.OrderNumber,
+                o.TotalAmount,
+                o.Status,
+                o.CreatedAt
+            ));
+
+            return new PagedResult<OrderDto>(
+                dtoList,
+                totalCount,
+                filter.PageNumber,
+                filter.PageSize
+            );
         }
     }
 }

@@ -25,5 +25,13 @@ namespace FullSolutionSoft.Api.Controllers
             var orders = await _service.GetOrdersByCustomerAsync(customerId);
             return Ok(orders);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetFiltered([FromQuery] OrderFilterDto filter)
+        {
+            var result = await _service.GetFilteredAsync(filter);
+            return Ok(result);
+        }
+
     }
 }

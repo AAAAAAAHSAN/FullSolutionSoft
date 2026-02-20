@@ -37,10 +37,25 @@ namespace FullSolutionSoft.Infrastructure.Repositories
             return (data, totalCount);
         }
 
+        public IQueryable<Order> GetQueryable()
+        {
+            return _context.Orders.AsQueryable();
+        }
+
         public async Task AddAsync(Order order) => await _context.Orders.AddAsync(order);
 
         public async Task<IEnumerable<Order>> GetByCustomerIdAsync(Guid customerId) =>
             await _context.Orders.Where(o => o.CustomerId == customerId).ToListAsync();
+
+        public async Task<int> CountAsync(IQueryable<Order> query)
+        {
+            return await query.CountAsync();
+        }
+
+        public async Task<List<Order>> ToListAsync(IQueryable<Order> query)
+        {
+            return await query.ToListAsync();
+        }
 
         public async Task SaveChangesAsync() => await _context.SaveChangesAsync();
     }

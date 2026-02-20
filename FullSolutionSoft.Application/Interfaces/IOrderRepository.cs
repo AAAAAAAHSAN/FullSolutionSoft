@@ -9,13 +9,11 @@ namespace FullSolutionSoft.Application.Interfaces
     public interface IOrderRepository
     {
         Task AddAsync(Order order);
-        Task<(List<Order>, int totalCount)> GetFilteredAsync(
-            DateTime? from,
-            DateTime? to,
-            OrderStatus? status,
-            int pageNumber,
-            int pageSize);
+        IQueryable<Order> GetQueryable();
         Task<IEnumerable<Order>> GetByCustomerIdAsync(Guid customerId);
+        Task<int> CountAsync(IQueryable<Order> query);
+        Task<List<Order>> ToListAsync(IQueryable<Order> query);
+
         Task SaveChangesAsync();
 
     }
