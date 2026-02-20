@@ -1,0 +1,8 @@
+<Solution>
+  <Project Path="FullSolutionSoft.Api/FullSolutionSoft.Api.csproj" />
+  <Project Path="FullSolutionSoft.Application/FullSolutionSoft.Application.csproj" />
+  <Project Path="FullSolutionSoft.Domain/FullSolutionSoft.Domain.csproj" />
+  <Project Path="FullSolutionSoft.Infrastructure/FullSolutionSoft.Infrastructure.csproj" />
+  <Project Path="FullSolutionSoft.IntegrationTests/FullSolutionSoft.IntegrationTests.csproj" />
+  <Project Path="FullSolutionSoft.UnitTests/FullSolutionSoft.UnitTests.csproj" />
+</Solution>

@@ -1,0 +1,6 @@
+@FullSolutionSoft.Api_HostAddress = http://localhost:5183
+
+GET {{FullSolutionSoft.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
