@@ -34,5 +34,16 @@ namespace FullSolutionSoft.Api.Controllers
 
             return Ok(result);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllCustomers()
+        {
+            var result = await _service.GetAllAsync();
+
+            if (result == null)
+                return NotFound();
+
+            return Ok(result);
+        }
     }
 }
