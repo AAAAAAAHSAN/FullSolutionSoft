@@ -23,7 +23,8 @@ namespace FullSolutionSoft.Application.Services
                 Id = Guid.NewGuid(),
                 Email = dto.Email,
                 FirstName = dto.FirstName,
-                LastName = dto.LastName
+                LastName = dto.LastName,
+                CreatedAt = DateTime.Now
             };
 
             await _repository.AddAsync(customer);
