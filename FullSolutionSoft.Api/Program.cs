@@ -26,8 +26,11 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 // Application layer services
 builder.Services.AddScoped<ICustomerService, CustomerService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+
 // Infrastructure layer repositories
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 
 var app = builder.Build();
 

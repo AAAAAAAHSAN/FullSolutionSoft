@@ -15,5 +15,8 @@ namespace FullSolutionSoft.Application.Interfaces
             OrderStatus? status,
             int pageNumber,
             int pageSize);
+        Task<IEnumerable<Order>> GetByCustomerIdAsync(Guid customerId);
+        Task SaveChangesAsync();
+
     }
 }

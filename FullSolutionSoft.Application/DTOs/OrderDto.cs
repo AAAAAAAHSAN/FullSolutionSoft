@@ -1,19 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using FullSolutionSoft.Domain.Enums;
 
 namespace FullSolutionSoft.Application.DTOs
 {
     public record OrderDto(
     Guid Id,
     Guid CustomerId,
+    string OrderNumber,
     decimal TotalAmount,
-    string Status,
+    OrderStatus Status,
     DateTime CreatedAt
 );
 
     public record CreateOrderDto(
         Guid CustomerId,
+        string OrderNumber,
         decimal TotalAmount
     );
 }

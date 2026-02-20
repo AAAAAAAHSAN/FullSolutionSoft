@@ -1,23 +1,18 @@
-﻿using FullSolutionSoft.Domain.Entities;
+﻿using FullSolutionSoft.Application.Interfaces;
+using FullSolutionSoft.Domain.Entities;
 using FullSolutionSoft.Domain.Enums;
 using FullSolutionSoft.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace FullSolutionSoft.Infrastructure.Repositories
 {
-    public class OrderRepository
+    public class OrderRepository: IOrderRepository
     {
         private readonly AppDbContext _context;
 
-        public async Task<(List<Order>, int)> GetFilteredAsync(
-    DateTime? from,
-    DateTime? to,
-    OrderStatus? status,
-    int pageNumber,
-    int pageSize)
+        public OrderRepository(AppDbContext context) => _context = context;
+
+        public async Task<(List<Order>, int)> GetFilteredAsync(DateTime? from, DateTime? to, OrderStatus? status, int pageNumber, int pageSize)
         {
             var query = _context.Orders.AsQueryable();
 
@@ -41,5 +36,13 @@ namespace FullSolutionSoft.Infrastructure.Repositories
 
             return (data, totalCount);
         }
+
+        public async Task AddAsync(Order order) => await _context.Orders.AddAsync(order);
+
+        public async Task<IEnumerable<Order>> GetByCustomerIdAsync(Guid customerId) =>
+            await _context.Orders.Where(o => o.CustomerId == customerId).ToListAsync();
+
+        public async Task SaveChangesAsync() => await _context.SaveChangesAsync();
     }
+
 }
