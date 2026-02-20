@@ -1,3 +1,4 @@
+using FullSolutionSoft.Application.Authentication;
 using FullSolutionSoft.Application.Common;
 using FullSolutionSoft.Application.Interfaces;
 using FullSolutionSoft.Application.Services;
@@ -7,9 +8,18 @@ using FullSolutionSoft.Infrastructure.Secutiry;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi;
 using System.Text;
 
+
+
 var builder = WebApplication.CreateBuilder(args);
+
+var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+var secret = jwtSettings["Secret"];
+var issuer = jwtSettings["Issuer"];
+var audience = jwtSettings["Audience"];
+var key = Encoding.UTF8.GetBytes(secret);
 
 // ----------------------
 // Add services to the container
@@ -36,8 +46,8 @@ builder.Services.AddScoped<IOrderService, OrderService>();
 // Infrastructure layer repositories
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
-builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
-
+//builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
+builder.Services.AddScoped<ILoginService, LoginService>();
 // ----------------------
 // Configure Middleware
 // ----------------------
@@ -45,8 +55,8 @@ builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 // Load JWT settings
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
 
-var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<JwtSettings>();
-var key = Encoding.UTF8.GetBytes(jwtSettings.Secret);
+//var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<JwtSettings>();
+//var key = Encoding.UTF8.GetBytes(jwtSettings.Secret);
 
 builder.Services.AddAuthentication(options =>
 {
@@ -61,8 +71,8 @@ builder.Services.AddAuthentication(options =>
         ValidateAudience = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        ValidIssuer = jwtSettings.Issuer,
-        ValidAudience = jwtSettings.Audience,
+        ValidIssuer = issuer,
+        ValidAudience = audience,
         IssuerSigningKey = new SymmetricSecurityKey(key)
     };
 });
@@ -70,20 +80,20 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddAuthorization();
 builder.Services.AddControllers();
 
-//builder.Services.AddSwaggerGen(options =>
-//{
-//    options.AddSecurityDefinition("bearer", new OpenApiSecurityScheme
-//    {
-//        Type = SecuritySchemeType.Http,
-//        Scheme = "bearer",
-//        BearerFormat = "JWT",
-//        Description = "JWT Authorization header using the Bearer scheme."
-//    });
-//    options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
-//    {
-//        [new OpenApiSecuritySchemeReference("bearer", document)] = []
-//    });
-//});
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition("bearer", new OpenApiSecurityScheme
+    {
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        Description = "JWT Authorization header using the Bearer scheme."
+    });
+    options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
+    {
+        [new OpenApiSecuritySchemeReference("bearer", document)] = []
+    });
+});
 
 var app = builder.Build();
 // Enable Swagger in Development
@@ -100,6 +110,7 @@ if (app.Environment.IsDevelopment())
 // Enable HTTPS redirection
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 // Authorization middleware
 app.UseAuthorization();
 

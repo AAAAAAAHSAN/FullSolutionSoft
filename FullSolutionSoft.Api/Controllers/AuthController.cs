@@ -1,4 +1,6 @@
-﻿using FullSolutionSoft.Infrastructure.Secutiry;
+﻿using FullSolutionSoft.Application.Authentication;
+using FullSolutionSoft.Application.DTOs;
+using FullSolutionSoft.Infrastructure.Secutiry;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -10,48 +12,20 @@ namespace FullSolutionSoft.Api.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly IJwtTokenService _jwtService;
+    private readonly ILoginService _loginService;
 
-    public AuthController(IJwtTokenService jwtService)
+    public AuthController(ILoginService loginService)
     {
-        _jwtService = jwtService;
+        _loginService = loginService;
     }
 
     [HttpPost("login")]
-    public IActionResult Login([FromBody] LoginRequest request)
+    public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
-        var jwtSecret = "SuperSecureJWTSecretKeyChangeThisInProd!1234567890";
-        var jwtIssuer = "FullSolutionSoft";
-        var jwtAudience = "FullSolutionSoftClient";
+        var result = await _loginService.LoginAsync(request);
+        if (result is null)
+            return Unauthorized();
 
-        // TODO: Replace with user validation from DB (Application Layer)
-        if (request.Username == "admin" && request.Password == "password")
-        {
-            var key = Encoding.UTF8.GetBytes(jwtSecret);
-            var tokenHandler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new System.Security.Claims.ClaimsIdentity(new[]
-                {
-                new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.Name, request.Username),
-                new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.Role, "Admin")
-            }),
-                Expires = DateTime.UtcNow.AddHours(2),
-                Issuer = jwtIssuer,
-                Audience = jwtAudience,
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            var jwt = tokenHandler.WriteToken(token);
-
-            return Ok(new { token = jwt });
-        }
-
-        return Unauthorized();
+        return Ok(new { token = result.Token });
     }
-}
-
-public class LoginRequest
-{
-    public string Username { get; set; }
-    public string Password { get; set; }
 }
