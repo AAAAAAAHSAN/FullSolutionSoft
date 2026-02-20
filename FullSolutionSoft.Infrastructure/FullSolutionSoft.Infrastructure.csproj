@@ -12,9 +12,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Authentication\" />
     <Folder Include="Identity\" />
     <Folder Include="Caching\" />
     <Folder Include="Configurations\" />
+    <Folder Include="Secutiry\" />
   </ItemGroup>
 
   <ItemGroup>

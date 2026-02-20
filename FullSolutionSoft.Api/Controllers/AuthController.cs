@@ -1,6 +1,5 @@
 ﻿using FullSolutionSoft.Application.Authentication;
 using FullSolutionSoft.Application.DTOs;
-using FullSolutionSoft.Infrastructure.Secutiry;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -11,7 +10,6 @@ namespace FullSolutionSoft.Api.Controllers;
 [Route("api/[controller]")]
 public class AuthController : ControllerBase
 {
-    private readonly IJwtTokenService _jwtService;
     private readonly ILoginService _loginService;
 
     public AuthController(ILoginService loginService)

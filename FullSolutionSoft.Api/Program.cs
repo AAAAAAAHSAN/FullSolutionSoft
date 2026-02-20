@@ -4,7 +4,6 @@ using FullSolutionSoft.Application.Interfaces;
 using FullSolutionSoft.Application.Services;
 using FullSolutionSoft.Infrastructure.Data; // your DbContext namespace
 using FullSolutionSoft.Infrastructure.Repositories;
-using FullSolutionSoft.Infrastructure.Secutiry;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
