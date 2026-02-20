@@ -1,8 +1,13 @@
+using FullSolutionSoft.Application.Common;
 using FullSolutionSoft.Application.Interfaces;
 using FullSolutionSoft.Application.Services;
 using FullSolutionSoft.Infrastructure.Data; // your DbContext namespace
 using FullSolutionSoft.Infrastructure.Repositories;
+using FullSolutionSoft.Infrastructure.Secutiry;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,13 +36,56 @@ builder.Services.AddScoped<IOrderService, OrderService>();
 // Infrastructure layer repositories
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
-
-var app = builder.Build();
+builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 
 // ----------------------
 // Configure Middleware
 // ----------------------
 
+// Load JWT settings
+builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
+
+var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<JwtSettings>();
+var key = Encoding.UTF8.GetBytes(jwtSettings.Secret);
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = jwtSettings.Issuer,
+        ValidAudience = jwtSettings.Audience,
+        IssuerSigningKey = new SymmetricSecurityKey(key)
+    };
+});
+
+builder.Services.AddAuthorization();
+builder.Services.AddControllers();
+
+//builder.Services.AddSwaggerGen(options =>
+//{
+//    options.AddSecurityDefinition("bearer", new OpenApiSecurityScheme
+//    {
+//        Type = SecuritySchemeType.Http,
+//        Scheme = "bearer",
+//        BearerFormat = "JWT",
+//        Description = "JWT Authorization header using the Bearer scheme."
+//    });
+//    options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
+//    {
+//        [new OpenApiSecuritySchemeReference("bearer", document)] = []
+//    });
+//});
+
+var app = builder.Build();
 // Enable Swagger in Development
 if (app.Environment.IsDevelopment())
 {

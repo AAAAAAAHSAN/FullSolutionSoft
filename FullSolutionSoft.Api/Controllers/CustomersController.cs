@@ -1,6 +1,5 @@
 ﻿using FullSolutionSoft.Application.DTOs;
 using FullSolutionSoft.Application.Interfaces;
-using FullSolutionSoft.Application.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FullSolutionSoft.Api.Controllers
@@ -36,6 +35,7 @@ namespace FullSolutionSoft.Api.Controllers
         }
 
         [HttpGet]
+        // [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAllCustomers()
         {
             var result = await _service.GetAllAsync();
