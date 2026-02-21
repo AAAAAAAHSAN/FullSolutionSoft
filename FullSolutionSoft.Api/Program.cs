@@ -95,6 +95,17 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 var app = builder.Build();
+
+// ----------------------
+// Apply EF Core Migrations Automatically
+// ----------------------
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.Migrate(); // This will create or update the database
+}
+
+
 // Enable Swagger in Development
 if (app.Environment.IsDevelopment())
 {
