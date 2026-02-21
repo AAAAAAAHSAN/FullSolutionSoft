@@ -1,0 +1,38 @@
+name: FullSolutionSoft CI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '10.0'   # change if using 7 or 6
+
+    - name: Restore dependencies
+      run: dotnet restore FullSolutionSoft.sln
+
+    - name: Build solution
+      run: dotnet build FullSolutionSoft.sln --configuration Release --no-restore
+
+    - name: Run unit tests
+      run: dotnet test FullSolutionSoft.sln --configuration Release --no-build --verbosity normal --collect:"XPlat Code Coverage"
+
+    - name: Publish API
+      run: dotnet publish src/FullSolutionSoft.Api/FullSolutionSoft.Api.csproj -c Release -o publish
+
+    - name: Upload API artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: FullSolutionSoft-API
+        path: publish
