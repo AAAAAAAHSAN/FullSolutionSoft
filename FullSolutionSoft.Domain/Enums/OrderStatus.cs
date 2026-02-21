@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿namespace FullSolutionSoft.Domain.Enums;
 
-namespace FullSolutionSoft.Domain.Enums
+public enum OrderStatus
 {
-    public enum OrderStatus
-    {
-        Pending,
-        Completed,
-        Cancelled
-    }
+    Pending,
+    Completed,
+    Cancelled
 }

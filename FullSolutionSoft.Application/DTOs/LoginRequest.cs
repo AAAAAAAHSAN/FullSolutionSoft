@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace FullSolutionSoft.Application.DTOs;
+﻿namespace FullSolutionSoft.Application.DTOs;
 
 public class LoginRequest
 {

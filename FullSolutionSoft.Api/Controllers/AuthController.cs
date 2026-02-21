@@ -1,8 +1,6 @@
 ﻿using FullSolutionSoft.Application.Authentication;
 using FullSolutionSoft.Application.DTOs;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
 
 namespace FullSolutionSoft.Api.Controllers;
 
