@@ -2,10 +2,13 @@ using FullSolutionSoft.Application.Authentication;
 using FullSolutionSoft.Application.Common;
 using FullSolutionSoft.Application.Interfaces;
 using FullSolutionSoft.Application.Services;
+using FullSolutionSoft.Domain.Entities;
 using FullSolutionSoft.Infrastructure.Data; // your DbContext namespace
+using FullSolutionSoft.Infrastructure.Migrations;
 using FullSolutionSoft.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using System.Text;
@@ -41,10 +44,12 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // Application layer services
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IProductService, ProductService>();
 
 // Infrastructure layer repositories
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
 //builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 builder.Services.AddScoped<ILoginService, LoginService>();
 // ----------------------
